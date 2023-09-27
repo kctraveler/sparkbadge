@@ -1,5 +1,5 @@
 from typing import List, Tuple
-import drawsvg as draw
+import drawSvg as draw
 import numpy as np
 # For testing purposes
 import tempfile
