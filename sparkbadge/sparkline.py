@@ -10,6 +10,7 @@ WIDTH = 107
 X_OFFSET = 7
 Y_OFFSET = 1
 
+
 def normalize(arr: np.ndarray) -> np.ndarray:
     max_arr = np.max(arr)
     if max_arr != 0:
@@ -55,7 +56,7 @@ def hist_trend(samples: List[int], stroke_color: str, stroke_width: int) -> str:
                   stroke_width=0.5,
                   fill='none'))
 
-    #return canvas.asDataUri()
+    # return canvas.asDataUri()
     return canvas.as_svg()
 
 
@@ -73,23 +74,23 @@ def trend(samples: List[int], stroke_color: str, stroke_width: int) -> str | Non
     for x, y in zip(xp[1:], yp[1:]):
         path.L(x, y)
     canvas.append(path)
-    
-    #return canvas.asDataUri()
+
+    # return canvas.asDataUri()
     return canvas.as_svg()
 
 
 def stacked_bar(samples, labels):
-    #canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, Y_OFFSET))
-    #canvas = draw.Drawing(200, 100, origin='center', displayInline=False)
+    # canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, Y_OFFSET))
+    # canvas = draw.Drawing(200, 100, origin='center', displayInline=False)
     canvas = draw.Drawing(WIDTH, HEIGHT, origin='center')
-    canvas.append(draw.Rectangle(-20,-HEIGHT,5,25, fill='green'))
-    #canvas.append(draw.Rectangle(-20,-20,5,20, fill='purple'))
-    canvas.append(draw.Rectangle(-15,-20,5,25, fill='green'))
+    canvas.append(draw.Rectangle(-20, -HEIGHT, 5, 25, fill='green'))
+    # canvas.append(draw.Rectangle(-20,-20,5,20, fill='purple'))
+    canvas.append(draw.Rectangle(-15, -20, 5, 25, fill='green'))
     canvas.append(
         draw.Line(WIDTH,
-                  Y_OFFSET-7,
+                  Y_OFFSET - 7,
                   -25,
-                  Y_OFFSET-7,
+                  Y_OFFSET - 7,
                   stroke='black',
                   stroke_width=0.5,
                   fill='none'))
@@ -100,7 +101,7 @@ def stacked_bar(samples, labels):
     '''
 
     canvas.save_svg('../examples')
-    #return canvas.asSvg()
+    # return canvas.asSvg()
 
 
 # Preview design in the browser
@@ -119,9 +120,9 @@ sb1 = stacked_bar(x, (y1, y2))
 
 values = [-10, -10, 32, 16, -3, 30, 25, 20, -15, 10, 5, 7]
 t = hist_trend(values, "#d944ea", 1)
-#t = trend(values, "#007ec6", 1)
+# t = trend(values, "#007ec6", 1)
 
-#browser_preview(sb1)
+# browser_preview(sb1)
 
 '''
 values = [-10, -10, 32, 16, -3, 30, 25, 20, -15, 10, 5, 7]
