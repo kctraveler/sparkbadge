@@ -2,6 +2,9 @@
 from typing import Any, Iterator
 import requests
 from itertools import islice
+import tempfile
+from sparkbadge import trend
+from pybadges import badge
 
 
 class Observer:
@@ -9,6 +12,25 @@ class Observer:
 
     def update(self, data: Any):
         print(data)
+
+
+class MakeBadge(Observer):
+    # TODO: This all should be moved into our package. Proof of concept
+    def update(self, data: list[dict]):
+        points = [int(x["covered_percent"]) for x in data]
+        sparkline = trend(points, "blue", 1)
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".svg") as tmpfile:
+            tmpfile.write(sparkline)
+            tmpfile.flush()
+
+            s = badge(
+                center_image=tmpfile.name,
+                left_text="Coverage",
+                right_text=f"{points[-1]}%",
+                center_color="#007ec6",
+                embed_center_image=True,
+            )
+            print(s)
 
 
 def get_data(url: str) -> Iterator[dict]:
@@ -23,6 +45,7 @@ def get_data(url: str) -> Iterator[dict]:
 
 
 def parse(raw_data: dict) -> dict:
+    """Parse build data down to only the values we need"""
     return {
         "created_at": raw_data["created_at"],
         "coverage_change": raw_data["coverage_change"],
@@ -33,10 +56,11 @@ def parse(raw_data: dict) -> dict:
 def run(input: Iterator[dict], out: Observer, count: int = 10):
     main_branches = filter(lambda build: build["branch"] in ["main", "master"], input)
     parsed_data = map(parse, main_branches)
-    recents = islice(parsed_data, count)
-    out.update(list(recents))
+    # reverse the data to ascending order to be graphed
+    recents = list(islice(parsed_data, count))[::-1]
+    out.update(recents)
 
 
 if __name__ == "__main__":
     url = "https://coveralls.io/github/kctraveler/github-actions.json"
-    run(get_data(url), Observer())
+    run(get_data(url), MakeBadge())
