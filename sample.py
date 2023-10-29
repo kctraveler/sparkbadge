@@ -3,7 +3,7 @@ from typing import Any, Iterator
 import requests
 from itertools import islice
 import tempfile
-from sparkbadge import trend
+from sparkbadge import *
 from pybadges import badge
 
 
@@ -30,7 +30,7 @@ class MakeBadge(Observer):
                 center_color="#007ec6",
                 embed_center_image=True,
             )
-            print(s)
+            browser_preview(s)
 
 
 def get_data(url: str) -> Iterator[dict]:
@@ -64,3 +64,4 @@ def run(input: Iterator[dict], out: Observer, count: int = 10):
 if __name__ == "__main__":
     url = "https://coveralls.io/github/kctraveler/github-actions.json"
     run(get_data(url), MakeBadge())
+    # run(get_data(url), Observer())

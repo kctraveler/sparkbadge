@@ -1,4 +1,4 @@
-from .sparkline import trend
+from .sparkline import trend, browser_preview
 
 
-__all__ = ["trend"]
+__all__ = ["trend", "browser_preview"]
