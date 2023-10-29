@@ -1,5 +1,5 @@
 # This is a sample script of how the package might be used.
-from typing import Any
+from typing import Any, Iterator
 import requests
 from itertools import islice
 
@@ -11,7 +11,7 @@ class Observer:
         print(data)
 
 
-def get_data(url: str):
+def get_data(url: str) -> Iterator[dict]:
     """Generator for build coverage data"""
     page = 1
     data = requests.get(url, params={"page": page}).json()
@@ -30,7 +30,7 @@ def parse(raw_data: dict) -> dict:
     }
 
 
-def run(input: iter, out: Observer, count: int = 10):
+def run(input: Iterator[dict], out: Observer, count: int = 10):
     main_branches = filter(lambda build: build["branch"] in ["main", "master"], input)
     parsed_data = map(parse, main_branches)
     recents = islice(parsed_data, count)
