@@ -27,8 +27,8 @@ class MakeBadge(Observer):
                 center_image=tmpfile.name,
                 left_text="Coverage",
                 right_text=f"{points[-1]}%",
-                center_color="#007ec6",
-                embed_center_image=True,
+                center_color="#555",
+                embed_center_image=True,   
             )
             browser_preview(s)
 
