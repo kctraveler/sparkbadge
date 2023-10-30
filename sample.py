@@ -2,10 +2,7 @@
 from typing import Any, Iterator
 import requests
 from itertools import islice
-import tempfile
-from sparkbadge import *
-from pybadges import badge
-
+from sparkbadge import Sparkbadge
 
 class Observer:
     """Simple base observer for printing output."""
@@ -13,24 +10,9 @@ class Observer:
     def update(self, data: Any):
         print(data)
 
-
-class MakeBadge(Observer):
-    # TODO: This all should be moved into our package. Proof of concept
-    def update(self, data: list[dict]):
-        points = [int(x["covered_percent"]) for x in data]
-        sparkline = trend(points, "blue", 1)
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".svg") as tmpfile:
-            tmpfile.write(sparkline)
-            tmpfile.flush()
-
-            s = badge(
-                center_image=tmpfile.name,
-                left_text="Coverage",
-                right_text=f"{points[-1]}%",
-                center_color="#555",
-                embed_center_image=True,   
-            )
-            browser_preview(s)
+class DisplayBadge(Observer):
+    def update(self, badge: Sparkbadge):
+        badge.display_browser()
 
 
 def get_data(url: str) -> Iterator[dict]:
@@ -58,10 +40,13 @@ def run(input: Iterator[dict], out: Observer, count: int = 10):
     parsed_data = map(parse, main_branches)
     # reverse the data to ascending order to be graphed
     recents = list(islice(parsed_data, count))[::-1]
-    out.update(recents)
+    points = [int(x["covered_percent"]) for x in recents]
+    badge = Sparkbadge(metric_data=points,
+                       metric_name="Coverage",
+                       right_text=f"{points[-1]}%")
+    out.update(badge)
 
 
 if __name__ == "__main__":
     url = "https://coveralls.io/github/kctraveler/github-actions.json"
-    run(get_data(url), MakeBadge())
-    # run(get_data(url), Observer())
+    run(get_data(url), DisplayBadge())

@@ -8,8 +8,6 @@ MarkupSafe==2.1.3
 numpy==1.25.2
 pybadges==3.0.1
 pycodestyle==2.11.1
-python-dotenv==1.0.0
-PyYAML==6.0.1
 requests==2.31.0
 -e git+https://github.com/kctraveler/sparkbadge.git@87d4176587cdf5a2d0e39631030b9f5f2f7e0c36#egg=sparkbadge
 tomli==2.0.1
