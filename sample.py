@@ -4,15 +4,17 @@ import requests
 from itertools import islice
 from sparkbadge import Sparkbadge
 
+
 class Observer:
     """Simple base observer for printing output."""
 
     def update(self, data: Any):
         print(data)
 
+
 class DisplayBadge(Observer):
     def update(self, badge: Sparkbadge):
-        badge.display_browser()
+        badge.preview()
 
 
 def get_data(url: str) -> Iterator[dict]:
@@ -41,9 +43,9 @@ def run(input: Iterator[dict], out: Observer, count: int = 10):
     # reverse the data to ascending order to be graphed
     recents = list(islice(parsed_data, count))[::-1]
     points = [int(x["covered_percent"]) for x in recents]
-    badge = Sparkbadge(metric_data=points,
-                       metric_name="Coverage",
-                       right_text=f"{points[-1]}%")
+    badge = Sparkbadge(
+        metric_data=points, metric_name="Coverage", right_text=f"{points[-1]}%"
+    )
     out.update(badge)
 
 
