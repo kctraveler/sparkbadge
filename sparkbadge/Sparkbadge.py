@@ -7,7 +7,7 @@ import os
 class Sparkbadge:
     def __init__(
         self,
-        metric_data: list[int],
+        metric_data: list[float],
         metric_name: str,
         right_text: str,
         line_color: str = "#00F",

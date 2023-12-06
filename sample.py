@@ -42,9 +42,9 @@ def run(input: Iterator[dict], out: Observer, count: int = 10):
     parsed_data = map(parse, main_branches)
     # reverse the data to ascending order to be graphed
     recents = list(islice(parsed_data, count))[::-1]
-    points = [int(x["covered_percent"]) for x in recents]
+    points = [float(x["covered_percent"]) for x in recents]
     badge = Sparkbadge(
-        metric_data=points, metric_name="Coverage", right_text=f"{points[-1]}%"
+        metric_data=points, metric_name="Coverage", right_text=f"{round(points[-1],2)}%"
     )
     out.update(badge)
 

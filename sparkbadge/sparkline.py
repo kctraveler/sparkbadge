@@ -19,7 +19,7 @@ def normalize(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-def fit_data(samples: List[int]) -> Tuple[List[int], List[int]]:
+def fit_data(samples: List[float]) -> Tuple[List[float], List[float]]:
     width = WIDTH - X_OFFSET
     N = int(width / len(samples))
     y = np.repeat(samples, N)
@@ -29,7 +29,7 @@ def fit_data(samples: List[int]) -> Tuple[List[int], List[int]]:
     return xp.tolist(), yp.tolist()
 
 
-def hist_trend(samples: List[int], stroke_color: str, stroke_width: int) -> str:
+def hist_trend(samples: List[float], stroke_color: str, stroke_width: int) -> str:
     canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, Y_OFFSET))
 
     xp, yp = fit_data(samples)
@@ -64,7 +64,7 @@ def hist_trend(samples: List[int], stroke_color: str, stroke_width: int) -> str:
     return canvas.as_svg()
 
 
-def trend(samples: List[int], stroke_color: str, stroke_width: int) -> str | None:
+def trend(samples: List[float], stroke_color: str, stroke_width: int) -> str | None:
     canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, -Y_OFFSET))
     path = draw.Path(
         fill="transparent",
