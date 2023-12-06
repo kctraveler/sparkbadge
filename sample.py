@@ -51,4 +51,5 @@ def run(input: Iterator[dict], out: Observer, count: int = 10):
 
 if __name__ == "__main__":
     url = "https://coveralls.io/github/kctraveler/github-actions.json"
+    #url = "https://coveralls.io/github/google/yapf.json"
     run(get_data(url), DisplayBadge())

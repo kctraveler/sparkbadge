@@ -19,14 +19,30 @@ def normalize(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
+# def fit_data(samples: List[float]) -> Tuple[List[float], List[float]]:
+#     width = WIDTH - X_OFFSET
+#     N = int(width / len(samples))
+#     y = np.repeat(samples, N)
+#     xp = np.linspace(start=X_OFFSET, stop=width, num=len(y))
+#     yp = normalize(np.poly1d(np.polyfit(xp, y, 15))(xp))
+#     yp *= HEIGHT // 2 + 1
+#     return xp.tolist(), yp.tolist()
+
 def fit_data(samples: List[float]) -> Tuple[List[float], List[float]]:
+    samples = list(map(lambda y: round(y, 2), samples))
+    maxY = max(samples)
+    minY = min(samples)
     width = WIDTH - X_OFFSET
-    N = int(width / len(samples))
-    y = np.repeat(samples, N)
-    xp = np.linspace(start=X_OFFSET, stop=width, num=len(y))
-    yp = normalize(np.poly1d(np.polyfit(xp, y, 15))(xp))
-    yp *= HEIGHT // 2 + 1
-    return xp.tolist(), yp.tolist()
+    height = HEIGHT - Y_OFFSET
+    scale = height / (maxY - minY)
+
+    yp, xp = list(), list()
+    for i, y in enumerate(samples):
+        xp.append(((width / (len(samples) - 1)) * i) + X_OFFSET // 2)
+        yp.append(((height - (y - minY)) * scale))
+    
+    return xp, yp
+
 
 
 def hist_trend(samples: List[float], stroke_color: str, stroke_width: int) -> str:
@@ -65,19 +81,32 @@ def hist_trend(samples: List[float], stroke_color: str, stroke_width: int) -> st
 
 
 def trend(samples: List[float], stroke_color: str, stroke_width: int) -> str | None:
-    canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, -Y_OFFSET))
-    path = draw.Path(
+    canvas = draw.Drawing(WIDTH, HEIGHT, origin=(0, -Y_OFFSET ), id_prefix="trend")
+
+    xp, yp = fit_data(samples)
+  
+    fillPath = draw.Path(
+        fill="#ddffdd",
+        stroke_opacity = 0,
+        fill_opacity=0.8
+    )
+    fillPath.M(xp[0], yp[0])
+    for x, y in zip(xp[1:], yp[1:]):
+        fillPath.L(x, y)  
+    fillPath.L(xp[-1], HEIGHT)
+    canvas.append(fillPath)
+
+    linePath = draw.Path(
         fill="transparent",
         stroke=stroke_color,
         stroke_width=stroke_width,
         stroke_linejoin="round",
     )
-
-    xp, yp = fit_data(samples)
-    path.M(xp[0], yp[0])
+    linePath.M(xp[0], yp[0])
     for x, y in zip(xp[1:], yp[1:]):
-        path.L(x, y)
-    canvas.append(path)
+        linePath.L(x, y)
+    
+    canvas.append(linePath)
 
     # return canvas.asDataUri()
     return canvas.as_svg()
